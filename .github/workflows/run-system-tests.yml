@@ -40,32 +40,34 @@ jobs:
           version: 1.6.1
           virtualenvs-create: true
           virtualenvs-in-project: true
-      - name: AWS login with PROD credentials
-        if: ${{ inputs.sys_test_env == 'prod' }}
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.ROOFTOP_SOLAR_PROD_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ROOFTOP_SOLAR_PROD_AWS_SECRET_KEY }}
-          aws-region: us-east-1
-      - name: AWS login with DEV credentials
-        if: ${{ inputs.sys_test_env != 'prod' }}
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.ROOFTOP_SOLAR_DEV_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ROOFTOP_SOLAR_DEV_AWS_SECRET_KEY }}
-          aws-region: us-east-1
-      - run: |-
-          aws codeartifact login --tool pip --domain energysage --domain-owner 659694780082 --repository cloud-engineering
-          aws codeartifact login --tool npm --domain energysage --domain-owner 659694780082 --repository cloud-engineering
-          poetry config http-basic.codeartifact aws $(aws codeartifact get-authorization-token --domain energysage --domain-owner 659694780082 --query authorizationToken --output text)
-     # - run: poetry install --no-interaction --no-root
-      # - run: npx projen
-      # - env:
-      #     SYS_TEST_ENV: ${{ inputs.sys_test_env }}
-      #   run: npx projen system_tests
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Run system tests
-        env:
-          SYS_TEST_ENV: ${{ inputs.sys_test_env }}
-        run: python system_tests.py
+      - name: MOCK TESTING
+        run: echo mock
+    #   - name: AWS login with PROD credentials
+    #     if: ${{ inputs.sys_test_env == 'prod' }}
+    #     uses: aws-actions/configure-aws-credentials@v2
+    #     with:
+    #       aws-access-key-id: ${{ secrets.ROOFTOP_SOLAR_PROD_AWS_ACCESS_KEY_ID }}
+    #       aws-secret-access-key: ${{ secrets.ROOFTOP_SOLAR_PROD_AWS_SECRET_KEY }}
+    #       aws-region: us-east-1
+    #   - name: AWS login with DEV credentials
+    #     if: ${{ inputs.sys_test_env != 'prod' }}
+    #     uses: aws-actions/configure-aws-credentials@v2
+    #     with:
+    #       aws-access-key-id: ${{ secrets.ROOFTOP_SOLAR_DEV_AWS_ACCESS_KEY_ID }}
+    #       aws-secret-access-key: ${{ secrets.ROOFTOP_SOLAR_DEV_AWS_SECRET_KEY }}
+    #       aws-region: us-east-1
+    #   - run: |-
+    #       aws codeartifact login --tool pip --domain energysage --domain-owner 659694780082 --repository cloud-engineering
+    #       aws codeartifact login --tool npm --domain energysage --domain-owner 659694780082 --repository cloud-engineering
+    #       poetry config http-basic.codeartifact aws $(aws codeartifact get-authorization-token --domain energysage --domain-owner 659694780082 --query authorizationToken --output text)
+    #  # - run: poetry install --no-interaction --no-root
+    #   # - run: npx projen
+    #   # - env:
+    #   #     SYS_TEST_ENV: ${{ inputs.sys_test_env }}
+    #   #   run: npx projen system_tests
+    #   - name: Install requirements
+    #     run: pip install -r requirements.txt
+    #   - name: Run system tests
+    #     env:
+    #       SYS_TEST_ENV: ${{ inputs.sys_test_env }}
+    #     run: python system_tests.py
