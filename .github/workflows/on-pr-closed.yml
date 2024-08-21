@@ -61,7 +61,7 @@ jobs:
         with:
           application_id: ${{ vars.AUTOCOMMIT_APP_ID }}
           application_private_key: ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
-
+          organization: jovan-sandbox-org
       - name: Commit automatic version bump
         if: github.event.pull_request.merged == true
         env:
