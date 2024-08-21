@@ -126,3 +126,17 @@ jobs:
     with:
       sys_test_env: ${{ needs.deploy-env.outputs.deploy-env }}
     secrets: inherit
+  print-stuff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: echo TEST_REPO_LEVEL_VARIABLE
+      run: echo ${{ env.TEST_REPO_LEVEL_VARIABLE }}
+    - name: echo TEST_REPO_LEVEL_SECRET
+      run: echo ${{ secrets.TEST_REPO_LEVEL_SECRET }}
+    - name: echo app id
+      run: echo ${{ env.AUTOCOMMIT_APP_ID }}
+    - name: echo key id
+      run: echo ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
+
