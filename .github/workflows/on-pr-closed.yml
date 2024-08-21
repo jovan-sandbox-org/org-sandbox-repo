@@ -55,7 +55,10 @@ jobs:
         if: github.event.pull_request.merged == true
         run: sed -E -i 's/version="[0-9]+\.[0-9]+\.[0-9]+"/version="${{ steps.calculate-new-package-version.outputs.new-version-number }}"/' .projenrc.py
       # - run: npx projen
-
+      - name: echo app id
+        run: echo ${{ env.AUTOCOMMIT_APP_ID }}
+      - name: echo key id
+        run: echo ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
       - name: Get token for gh app Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@v3
