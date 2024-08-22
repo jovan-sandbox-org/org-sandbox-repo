@@ -62,6 +62,11 @@ jobs:
           application_id: ${{ vars.AUTOCOMMIT_APP_ID }}
           application_private_key: ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
           organization: jovan-sandbox-org
+      - name: Inspect GitHub App token permissions
+        run: |
+          curl -H "Authorization: Bearer ${{ steps.get_workflow_token.outputs.token }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/app
       - name: Commit automatic version bump
         if: github.event.pull_request.merged == true
         env:
