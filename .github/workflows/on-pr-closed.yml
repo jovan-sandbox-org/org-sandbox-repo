@@ -28,7 +28,26 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Get token for gh app Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v3
+        with:
+          application_id: ${{ vars.AUTOCOMMIT_APP_ID }}
+          application_private_key: ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
+          organization: jovan-sandbox-org
+      - name: Inspect GitHub App token permissions
+        run: |
+          curl -H "Authorization: Bearer ${{ steps.get_workflow_token.outputs.token }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/app
+      - name: Inspect GitHub default token permissions
+        run: |
+          curl -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/app
+      - uses: actions/checkout@v4
+        with: 
+          token: ${{ steps.get_workflow_token.outputs.token }} 
       - name: ls
         run: ls -la
       - name: Get PR type
@@ -55,22 +74,8 @@ jobs:
         if: github.event.pull_request.merged == true
         run: sed -E -i 's/version="[0-9]+\.[0-9]+\.[0-9]+"/version="${{ steps.calculate-new-package-version.outputs.new-version-number }}"/' .projenrc.py
       # - run: npx projen
-      - name: Get token for gh app Token
-        id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v3
-        with:
-          application_id: ${{ vars.AUTOCOMMIT_APP_ID }}
-          application_private_key: ${{ secrets.AUTOCOMMIT_APP_PRIVATE_KEY }}
-          organization: jovan-sandbox-org
-      - name: Inspect GitHub App token permissions
-        run: |
-          curl -H "Authorization: Bearer ${{ steps.get_workflow_token.outputs.token }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/app
       - name: Commit automatic version bump
         if: github.event.pull_request.merged == true
-        env:
-          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
         run: |-
           git config user.name 'autocommit app'
           git config user.email 'autocommit-app@placeholder.com'
